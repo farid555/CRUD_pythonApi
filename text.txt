@@ -3,4 +3,4 @@ command Palette :venv\Scripts\python.exe
 In terminal command: venv\scripts\activate
 install: pip install "fastapi[all]"
 it will show what we install the driver: pip freeze
-run the main: uvicorn main:app
+run the main: uvicorn main:app --reload
