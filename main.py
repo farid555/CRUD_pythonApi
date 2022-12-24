@@ -25,6 +25,12 @@ def find_post(id):
             return p
 
 
+def delete_index_post(id):
+    for index, p in enumerate(my_posts):
+        if p["id"] == id:
+            return index
+
+
 @app.get("/")
 def root():
     return {"message": "Welcome to my api..., start nice journey..."}
@@ -52,3 +58,14 @@ def create_posts(post: Post):
     post_dict["id"] = randrange(0, 10000000000)
     my_posts.append(post_dict)
     return {"new_post": post_dict}
+
+
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    indexDelete = delete_index_post(id)
+    if indexDelete == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} does not exist")
+
+    my_posts.pop(indexDelete)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
