@@ -35,6 +35,8 @@ def delete_index_post(id):
 def root():
     return {"message": "Welcome to my api..., start nice journey..."}
 
+# Get single
+
 
 @app.get("/posts/{id}")
 def get_posts(id: int, response: Response):
@@ -46,10 +48,14 @@ def get_posts(id: int, response: Response):
        # return {"message": f" was not found {id}"}
     return {"post details": post}
 
+# Get all
+
 
 @app.get("/posts")
 def get_posts():
     return {"data": my_posts}
+
+# Create
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
@@ -58,6 +64,8 @@ def create_posts(post: Post):
     post_dict["id"] = randrange(0, 10000000000)
     my_posts.append(post_dict)
     return {"new_post": post_dict}
+
+# Delete
 
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -69,3 +77,17 @@ def delete_post(id: int):
 
     my_posts.pop(indexDelete)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+# Edit
+
+
+@app.put("/posts/{id}")
+def updat_post(id: int, post: Post):
+    index_put = delete_index_post(id)
+    if index_put == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} does not exist")
+    post_dict = post.dict()
+    post_dict["id"] = id
+    my_posts[index_put] = post_dict
+    return {"data": post_dict}
