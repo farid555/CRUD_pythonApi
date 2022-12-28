@@ -1,14 +1,30 @@
 from typing import Optional
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.params import Body
 from pydantic import BaseModel
 from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+from . import models
+from .database import SessionLocal, engine
+
+from sqlalchemy.orm import Session
+
+
+models.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
+
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 class Post(BaseModel):
@@ -48,6 +64,11 @@ def delete_index_post(id):
             return index
 
 
+@app.get("/sql")
+def test_posts(db: Session = Depends(get_db)):
+    return {"status": "Success"}
+
+
 @app.get("/")
 def root():
     return {"message": "Welcome to my api..., start nice journey..."}
@@ -59,7 +80,7 @@ def root():
 def get_posts(id: str):
     cursor.execute("""SELECT * from posts WHERE id = %s """, (str(id)))
     post = cursor.fetchone()
-    if not post: 
+    if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"post with id: {id} was not found...")
        # response.status_code = status.HTTP_404_NOT_FOUND
