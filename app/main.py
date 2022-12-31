@@ -7,8 +7,7 @@ from psycopg2.extras import RealDictCursor
 import time
 from . import models
 from .database import SessionLocal, engine
-from .routers import post, user
-
+from .routers import post, user, auth
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -49,3 +48,4 @@ def delete_index_post(id):
 
 app.include_router(post.router)
 app.include_router(user.router)
+app.include_router(auth.router)

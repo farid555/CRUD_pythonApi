@@ -21,9 +21,8 @@ def get_post(id: int, db: Session = Depends(get_db)):
                             detail=f"post with id: {id} was not found...")
     return post
 
+
 # Get all
-
-
 @router.get("/", response_model=List[schemas.Post])
 def get_posts(db: Session = Depends(get_db)):
     posts = db.query(models.Post).all()
@@ -38,12 +37,10 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db)):
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
-
     return new_post
 
+
 # Delete
-
-
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db)):
 
