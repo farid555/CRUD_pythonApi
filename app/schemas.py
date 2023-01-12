@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Optional
 
 
-
 class PostBase(BaseModel):
     title: str
     content: str
@@ -44,6 +43,7 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
-    
-class TokenDatat(BaseModel):
+
+
+class TokenData(BaseModel):
     id: Optional[str] = None
